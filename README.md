@@ -29,7 +29,8 @@
 1. 從 chat input 的問題中，用 Cohere 得到想查詢的股票代碼，並得到網頁 URL
 2. 用 Firecrawl Scrape API 抓取網頁資料，並用 Custom Component: Delimited Text Extractor 擷取需要的部分
 
-![image](https://github.com/user-attachments/assets/8443c6ee-d312-48a4-960b-ff9b453a31b1)
+![image](https://github.com/user-attachments/assets/8f30d5ea-0bd2-4655-b78f-4582f30edf82)
+
 
 #### Custom Component: Delimited Text Extractor
 ```python
