@@ -1,12 +1,469 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
-    <title>財報分析助理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>財務報表分析助理</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f4f6f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3a8a;
+            margin-top: 20px;
+            margin-bottom: 0px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e3a8a;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            font-size: 1.4em;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .left-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .right-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-radius: 8px;
+            padding: 10px;
+            height: 520px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            min-width: 0;
+        }
+
+        .top-container {
+            border-radius: 8px;
+            padding: 10px;
+            height: 90px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .bottom-container {
+            border-radius: 8px;
+            padding: 10px;
+            height: 390px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #statement {
+            flex: 1 1 auto;
+            overflow: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #fcfcfc;
+            margin-top: 10px;
+            display: flex;
+        }
+
+        .table {
+            width: 100%;
+            margin: 0 auto;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .table caption {
+            caption-side: top;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .table th,
+        .table td {
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+
+        .table th {
+            background: #1e3a8a;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .table td:first-child {
+            text-align: left;
+        }
+
+        .table td:last-child {
+            text-align: right;
+        }
+
+        .highlight {
+            background-color: #eef2ff;
+        }
+
+        #page {
+            text-align: center;
+        }
+
+        #number {
+            padding: 5px 0px;
+        }
+
+        #prev,
+        #next {
+            padding: 6px 10px;
+            margin: 0px 4px;
+            border: none;
+            border-radius: 4px;
+            background-color: #1e3a8a;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #prev:hover,
+        #next:hover {
+            background-color: #3b82f6;
+        }
+
+        #conversation {
+            flex: 1;
+            overflow: auto;
+            padding: 10px;
+            background-color: #fcfcfc;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: flex;
+            margin-top: 10px;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .question,
+        .answer {
+            max-width: 80%;
+            padding: 10px;
+            border-radius: 12px;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .question {
+            background-color: #2570e9;
+            color: #fff;
+            align-self: flex-end;
+            border-bottom-right-radius: 0;
+            word-wrap: break-word;
+        }
+
+        .answer {
+            background-color: #eef2ff;
+            color: #1e3a8a;
+            align-self: flex-start;
+            border-bottom-left-radius: 0;
+            word-wrap: break-word;
+        }
+
+        input {
+            width: calc(100% - 80px);
+            height: 20px;
+            padding: 8px;
+            margin-top: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: #fcfcfc;
+        }
+
+        #send {
+            padding: 9px 15px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #1e3a8a;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #send:hover {
+            background-color: #3b82f6;
+        }
+
+        #statement::-webkit-scrollbar,
+        #conversation::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        #statement::-webkit-scrollbar-thumb,
+        #conversation::-webkit-scrollbar-thumb {
+            background-color: rgba(30, 58, 138, 0.5);
+            border-radius: 4px;
+        }
+
+        #statement::-webkit-scrollbar-track,
+        #conversation::-webkit-scrollbar-track {
+            background-color: #f4f6f8;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1e3a8a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$'], ['[', ']'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
+
 <body>
+    <h1>財務報表分析助理</h1>
 
-<h1>財報分析助理</h1>
+    <div class="container">
+        <div class="left-container">
+            <div class="top-container">
+                <h2>問題輸入</h2>
+                <div id="query">
+                    <input type="text" id="input" placeholder="輸入你的問題，例如：請比較台積電和聯發科去年的營收？">
+                    <button id="send" onclick="send()">送出</button>
+                </div>
+            </div>
 
+            <div class="bottom-container">
+                <h2>財報搜尋</h2>
+                <pre id="statement"></pre>
+                <div id="page">
+                    <button id="prev" onclick="prevPage()"><</button>
+                    <span id="number">第 0 / 0 頁</span>
+                    <button id="next" onclick="nextPage()">></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-container">
+            <h2>分析結果</h2>
+            <div id="conversation"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://financial-statement-analysis-agent-api.onrender.com/api";
+
+        let isSending = false;
+
+        async function send() {
+            if (isSending) return;
+            isSending = true;
+
+            const inputDiv = document.getElementById("input").value;
+            if (!inputDiv) {
+                alert("請輸入問題！");
+                return;
+            }
+
+            document.getElementById("input").value = "";
+
+            try {
+                document.getElementById("statement").innerHTML = '<div class="spinner"></div>';
+
+                const conversationDiv = document.getElementById("conversation");
+
+                const questionDiv = document.createElement("div");
+                questionDiv.className = "question";
+                questionDiv.innerHTML = inputDiv;
+                conversationDiv.appendChild(questionDiv);
+
+                questionDiv.scrollIntoView({ behavior: "smooth", block: "start" });
+
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ question: inputDiv })
+                });
+
+                const data = await response.json();
+                console.log(data);
+                
+                const fetchResult = data.fetch_result || "";
+                const cleanResult = data.clean_result || "";
+                const finalOutput = marked.parse(data.final_output || "");
+
+                let statementPage = [];
+                let currentPage = 0;
+
+                function renderTable(statementString) {
+                    const lines = statementString.trim().split('\n');
+
+                    let statementTable = "";
+
+                    lines.forEach((line, index) => {
+                        if (index == 0) {
+                            statementTable += `
+                                <table class="table">
+                                    <caption>${line.trim()}</caption>
+                            `;
+                            return;
+                        }
+
+                        if (index == 1) {
+                            statementTable += `
+                                <thead>
+                                    <th>Account</th>
+                                    <th>${line.trim()}</th>
+                                </thead>
+                                <tbody>
+                            `;
+                            return;
+                        }
+
+                        if (line.includes("highlight")) {
+                            const parts = line.trim().replace(/<[^>]*>/g, '').split(' ');
+                            const value = parts.pop();
+                            const key = parts.join(" ").trim();
+
+                            statementTable += `
+                                <tr>
+                                    <td class="highlight">${key}</td>
+                                    <td class="highlight">${value}</td>
+                                </tr>
+                            `;
+                        }
+                        else {
+                            const parts = line.trim().split(' ');
+                            const value = parts.pop();
+                            const key = parts.join(" ").trim();
+
+                            statementTable += `
+                                <tr>
+                                    <td>${key}</td>
+                                    <td>${value}</td>
+                                </tr>
+                            `;
+                        }
+                    });
+
+                    statementTable += `
+                            </tbody>
+                        </table>
+                    `;
+
+                    statementTable = statementTable.trim();
+
+                    return statementTable;
+                }
+
+                function renderPage() {
+                    if (statementPage.length == 0) {
+                        return;
+                    }
+
+                    document.getElementById("statement").innerHTML = renderTable(statementPage[currentPage]);
+
+                    document.getElementById("page").innerHTML = `
+                        <button id="prev" onclick="prevPage()"><</button>
+                        <span id="number">第 ${currentPage + 1} / ${statementPage.length - 1} 頁</span>
+                        <button id="next" onclick="nextPage()">></button>
+                    `
+                }
+
+                function prevPage() {
+                    if (currentPage > 0) {
+                        currentPage--;
+                        renderPage();
+                    }
+                }
+
+                function nextPage() {
+                    if (currentPage < statementPage.length - 2) {
+                        currentPage++;
+                        renderPage();
+                    }
+                }
+
+                function processStatement(fetchResult, cleanResult) {
+                    let statementResult = fetchResult;
+                    cleanResult.split('\n').forEach(line => {
+                        if (line && !line.includes('的')) {
+                            statementResult = statementResult.replaceAll(line, `<span class="highlight">${line}</span>`);
+                        }
+                    });
+
+                    statementPage = statementResult.split(/\n\s*\n/);
+                    currentPage = 0;
+
+                    renderPage();
+                }
+
+                window.prevPage = prevPage;
+                window.nextPage = nextPage;
+
+                processStatement(fetchResult, cleanResult);
+
+                const answerDiv = document.createElement("div");
+                answerDiv.className = "answer";
+                answerDiv.innerHTML = finalOutput;
+                console.log(answerDiv.innerHTML);
+                conversationDiv.appendChild(answerDiv);
+
+                questionDiv.scrollIntoView({ behavior: "smooth", block: "start" });
+
+                MathJax.typeset();
+            } catch (err) {
+                document.getElementById("answer").innerHTML = "錯誤：" + err.message;
+            } finally {
+                isSending = false;
+            }
+        }
+
+        const inputBox = document.getElementById("input");
+
+        inputBox.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                send();
+                event.preventDefault();
+            }
+        });
+    </script>
 </body>
+
 </html>
