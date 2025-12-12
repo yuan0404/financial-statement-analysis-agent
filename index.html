@@ -166,7 +166,6 @@
             padding: 10px;
             border-radius: 12px;
             line-height: 1.4;
-            word-break: break-word;
         }
 
         .question {
@@ -449,7 +448,7 @@
 
                 MathJax.typeset();
             } catch (err) {
-                document.getElementById("answer").innerHTML = "錯誤：" + err.message;
+                document.getElementById("answer").innerHTML = "Error: API requests limit exceeded. Please try again later.";
             } finally {
                 isSending = false;
             }
